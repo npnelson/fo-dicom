@@ -2,6 +2,7 @@
 // Licensed under the Microsoft Public License (MS-PL).
 
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Dicom.Network
 {
@@ -107,9 +108,9 @@ namespace Dicom.Network
         /// <param name="noDelay">No delay?</param>
         /// <param name="ignoreSslPolicyErrors">Ignore SSL policy errors?</param>
         /// <returns>Network stream implementation.</returns>
-        public static INetworkStream CreateNetworkStream(string host, int port, bool useTls, bool noDelay, bool ignoreSslPolicyErrors)
+        public static INetworkStream CreateNetworkStream(string host, int port, bool useTls, bool noDelay, bool ignoreSslPolicyErrors,X509CertificateCollection clientCertificateCollection=null)
         {
-            return _implementation.CreateNetworkStreamImpl(host, port, useTls, noDelay, ignoreSslPolicyErrors);
+            return _implementation.CreateNetworkStreamImpl(host, port, useTls, noDelay, ignoreSslPolicyErrors,clientCertificateCollection);
         }
 
         /// <summary>
@@ -151,7 +152,7 @@ namespace Dicom.Network
         /// <param name="noDelay">No delay?</param>
         /// <param name="ignoreSslPolicyErrors">Ignore SSL policy errors?</param>
         /// <returns>Network stream implementation.</returns>
-        protected abstract INetworkStream CreateNetworkStreamImpl(string host, int port, bool useTls, bool noDelay, bool ignoreSslPolicyErrors);
+        protected abstract INetworkStream CreateNetworkStreamImpl(string host, int port, bool useTls, bool noDelay, bool ignoreSslPolicyErrors,X509CertificateCollection clientCertificateCollection=null);
 
         /// <summary>
         /// Platform-specific implementation to check whether specified <paramref name="exception"/> represents a socket exception.

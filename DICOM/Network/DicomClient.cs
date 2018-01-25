@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -326,10 +327,11 @@ namespace Dicom.Network
         /// <param name="useTls">True if TLS security should be enabled, false otherwise.</param>
         /// <param name="callingAe">Calling Application Entity Title.</param>
         /// <param name="calledAe">Called Application Entity Title.</param>
+        /// <param name="clientCertificateCollection">ClientCertificateCollection to present to server if using TLS and server requires client certificate</param>
         /// <param name="millisecondsTimeout">Timeout in milliseconds for establishing association.</param>
         /// <returns>Awaitable task.</returns>
         public Task SendAsync(string host, int port, bool useTls, string callingAe, string calledAe,
-            int millisecondsTimeout = DefaultAssociationTimeout)
+            int millisecondsTimeout = DefaultAssociationTimeout,X509CertificateCollection clientCertificateCollection=null)
         {
             if (!CanSend) Task.FromResult(false); // TODO Replace with Task.CompletedTask when moving to .NET 4.6
 
@@ -337,7 +339,7 @@ namespace Dicom.Network
             var ignoreSslPolicyErrors = Options?.IgnoreSslPolicyErrors
                                         ?? DicomServiceOptions.Default.IgnoreSslPolicyErrors;
 
-            _networkStream = NetworkManager.CreateNetworkStream(host, port, useTls, noDelay, ignoreSslPolicyErrors);
+            _networkStream = NetworkManager.CreateNetworkStream(host, port, useTls, noDelay, ignoreSslPolicyErrors,clientCertificateCollection);
 
             var assoc = new DicomAssociation(callingAe, calledAe)
             {

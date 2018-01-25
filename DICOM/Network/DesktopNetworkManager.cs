@@ -7,6 +7,7 @@ namespace Dicom.Network
     using System.Globalization;
     using System.Net.NetworkInformation;
     using System.Net.Sockets;
+    using System.Security.Cryptography.X509Certificates;
 
     /// <summary>
     /// .NET implementation of <see cref="NetworkManager"/>.
@@ -60,9 +61,9 @@ namespace Dicom.Network
         }
 
         /// <inheritdoc />
-        protected override INetworkStream CreateNetworkStreamImpl(string host, int port, bool useTls, bool noDelay, bool ignoreSslPolicyErrors)
+        protected override INetworkStream CreateNetworkStreamImpl(string host, int port, bool useTls, bool noDelay, bool ignoreSslPolicyErrors,X509CertificateCollection clientCertificateCollection=null)
         {
-            return new DesktopNetworkStream(host, port, useTls, noDelay, ignoreSslPolicyErrors);
+            return new DesktopNetworkStream(host, port, useTls, noDelay, ignoreSslPolicyErrors,clientCertificateCollection);
         }
 
         /// <inheritdoc />

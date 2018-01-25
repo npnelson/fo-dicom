@@ -36,7 +36,7 @@ namespace Dicom.Network
         /// <param name="useTls">Use TLS layer?</param>
         /// <param name="noDelay">No delay?</param>
         /// <param name="ignoreSslPolicyErrors">Ignore SSL policy errors?</param>
-        internal DesktopNetworkStream(string host, int port, bool useTls, bool noDelay, bool ignoreSslPolicyErrors)
+        internal DesktopNetworkStream(string host, int port, bool useTls, bool noDelay, bool ignoreSslPolicyErrors,X509CertificateCollection clientCertificateCollection= null)
         {
             this.RemoteHost = host;
             this.RemotePort = port;
@@ -56,9 +56,10 @@ namespace Dicom.Network
                     false,
                     (sender, certificate, chain, errors) => errors == SslPolicyErrors.None || ignoreSslPolicyErrors);
 #if NETSTANDARD
-                ssl.AuthenticateAsClientAsync(host).Wait();
+               
+                ssl.AuthenticateAsClientAsync(host,clientCertificateCollection,SslProtocols.None,!ignoreSslPolicyErrors).Wait();
 #else
-                ssl.AuthenticateAsClient(host);
+                ssl.AuthenticateAsClient(host,clientCertificateCollection,SslProtocols.Default,!ignoreSslPolicyErrors);
 #endif
                 stream = ssl;
             }
